@@ -1,0 +1,71 @@
+call plug#begin('~/.vim/plugged')
+" Flutter plugins
+Plug 'dart-lang/dart-vim-plugin'
+Plug 'thosakwe/vim-flutter'
+Plug 'natebosch/vim-lsc'
+Plug 'natebosch/vim-lsc-dart'
+
+" tpope plugins
+Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-rails'
+Plug 'tpope/vim-rake'
+Plug 'tpope/vim-bundler'
+Plug 'tpope/vim-rbenv'
+Plug 'tpope/vim-rhubarb'
+Plug 'tpope/vim-ragtag'
+
+" Elixir plugins
+Plug 'elixir-editors/vim-elixir'
+Plug 'slashmili/alchemist.vim'
+
+Plug 'dense-analysis/ale'
+
+" Fugitive Vim GitHub Wrapper
+Plug 'tpope/vim-fugitive'
+
+" Syntax
+Plug 'sheerun/vim-polyglot'
+
+" Status bar
+Plug 'maximbaz/lightline-ale'
+Plug 'itchyny/lightline.vim'
+
+" Themes
+Plug 'morhetz/gruvbox'
+Plug 'shinchu/lightline-gruvbox.vim'
+
+" Tree
+Plug 'scrooloose/nerdtree'
+
+" Typing
+Plug 'jiangmiao/auto-pairs'
+Plug 'alvan/vim-closetag'
+Plug 'tpope/vim-surround'
+
+" Tmux
+Plug 'benmills/vimux'
+Plug 'christoomey/vim-tmux-navigator'
+
+" Autocomplete
+Plug 'sirver/ultisnips'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" Test
+Plug 'tyewang/vimux-jest-test'
+Plug 'janko-m/vim-test'
+
+" IDE
+Plug 'editorconfig/editorconfig-vim'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'easymotion/vim-easymotion'
+Plug 'mhinz/vim-signify'
+Plug 'yggdroot/indentline'
+Plug 'scrooloose/nerdcommenter'
+
+" Git
+Plug 'tpope/vim-repeat'
+
+call plug#end()
+
