@@ -9,12 +9,12 @@ Configuración personalizada de Vim optimizada para desarrollo con múltiples le
 | **Elixir / Phoenix** | coc-elixir (ElixirLS) | credo, dialyxir | mix format | ✅ |
 | **Erlang** | erlang_ls | erlc, dialyzer | erlfmt | ✅ |
 | **PHP** | coc-phpls (Intelephense) | php, phpcs, phpstan | php-cs-fixer (PSR-12) | ✅ |
-| **Dart / Flutter** | coc-flutter, coc-dart | dart_analyze | dart-format | ✅ |
+| **Dart / Flutter** | coc-flutter | dart_analyze | dart-format | ✅ |
 | **C / C++** | coc-clangd | cc, clangtidy | clang-format | ✅ |
 | **SQL** | coc-sql | sqlint | pgformatter | ✅ |
 | **JavaScript / Node.js** | coc-tsserver | eslint | prettier | ✅ |
 | **TypeScript** | coc-tsserver | eslint | prettier | ✅ |
-| **Nginx** | — | nginx-linter | — | ✅ |
+| **Nginx** | — | gixy | — | ✅ |
 | **Docker** | coc-docker | hadolint | — | ✅ |
 | **Markdown** | coc-markdownlint | markdownlint | prettier | ✅ |
 | **Vim script** | coc-vimlsp | vint | — | ✅ |
@@ -227,8 +227,10 @@ npm install -g sql-lint
 ### Nginx
 
 ```bash
-# Linter para archivos de configuración Nginx
-pip install nginx-linter
+# Linter/analizador de seguridad para configuraciones Nginx
+pipx install gixy       # Python 3.11+ (recomendado)
+# o
+pip3 install --user gixy
 
 # Verificar sintaxis con nginx directamente
 # nginx -t -c /path/to/nginx.conf
@@ -258,7 +260,9 @@ npm install -g markdownlint-cli
 ### Vim script
 
 ```bash
-pip install vim-vint
+pipx install vim-vint    # Python 3.11+ (recomendado)
+# o
+pip3 install --user vim-vint
 ```
 
 ### Herramientas generales recomendadas
@@ -384,6 +388,21 @@ brew install nvm
 |-------|--------|
 | `<Leader>du` | Toggle UI de base de datos |
 | `<Leader>df` | Buscar buffer de BD |
+
+### PHP Refactoring
+
+| Atajo | Acción |
+|-------|--------|
+| `<Leader>rlv` | Renombrar variable local |
+| `<Leader>rcv` | Renombrar variable de clase |
+| `<Leader>rm` | Renombrar método |
+| `<Leader>eu` | Extraer use |
+| `<Leader>ec` | Extraer constante (visual) |
+| `<Leader>ep` | Extraer propiedad de clase |
+| `<Leader>np` | Crear propiedad |
+| `<Leader>pdu` | Detectar use no utilizados |
+| `<Leader>sg` | Crear setters/getters (visual) |
+| `<Leader>da` | Documentar todo |
 
 ### Markdown
 

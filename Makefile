@@ -82,9 +82,14 @@ tools-essential: ## Install essential tools only (ripgrep, fzf, prettier)
 tools: tools-essential ## Install all external tools
 	@echo "==> Instalando todas las herramientas..."
 	@npm install -g typescript ts-node markdownlint-cli sql-lint 2>/dev/null || true
-	@pip3 install --user vim-vint nginx-linter 2>/dev/null || true
+	@if command -v pipx &>/dev/null; then \
+		pipx install vim-vint 2>/dev/null || true; \
+		pipx install gixy 2>/dev/null || true; \
+	elif command -v pip3 &>/dev/null; then \
+		pip3 install --user vim-vint gixy 2>/dev/null || true; \
+	fi
 	@if command -v composer &>/dev/null; then \
-		composer global require squizlabs/php_codesniffer phpstan/phpstan friendsofphp/php-cs-fixer 2>/dev/null || true; \
+		composer global require --no-interaction squizlabs/php_codesniffer phpstan/phpstan friendsofphp/php-cs-fixer 2>/dev/null || true; \
 	fi
 	@if command -v brew &>/dev/null; then \
 		brew install llvm pgformatter hadolint 2>/dev/null || true; \
@@ -97,9 +102,9 @@ check: ## Check which tools are installed
 	@echo ""
 	@echo "=== Estado de herramientas ==="
 	@echo ""
-	@for cmd in vim node npm git ripgrep fzf prettier eslint typescript clangd \
+	@for cmd in vim node npm git rg fzf prettier eslint tsc clangd \
 		clang-format php composer hadolint markdownlint elixir mix dart flutter \
-		erlang_ls nginx-linter pgformatter vint; do \
+		erlc gixy pgformatter vint phpcs phpstan php-cs-fixer sql-lint; do \
 		if command -v $$cmd &>/dev/null 2>&1; then \
 			printf "  \033[32m✓\033[0m %-20s %s\n" "$$cmd" "$$($$cmd --version 2>/dev/null | head -1 || echo 'instalado')"; \
 		else \
