@@ -90,7 +90,14 @@ npm_install() {
     return 0
   fi
   info "Instalando $pkg via npm..."
-  npm install -g "$pkg" 2>/dev/null || warn "No se pudo instalar $pkg via npm"
+  # Try without sudo first, then with sudo on Linux
+  if npm install -g "$pkg" 2>/dev/null; then
+    success "$pkg instalado via npm"
+  elif [[ "$OS" != "macos" ]] && sudo npm install -g "$pkg" 2>/dev/null; then
+    success "$pkg instalado via npm (sudo)"
+  else
+    warn "No se pudo instalar $pkg via npm. Intenta manualmente: sudo npm install -g $pkg"
+  fi
 }
 
 pip_install() {
@@ -100,7 +107,17 @@ pip_install() {
     return 0
   fi
   info "Instalando $pkg via pip..."
-  pip3 install --user "$pkg" 2>/dev/null || warn "No se pudo instalar $pkg via pip"
+  # Try pipx first (Python 3.11+ recommended), then pip with fallbacks
+  if command_exists pipx; then
+    pipx install "$pkg" 2>/dev/null && success "$pkg instalado via pipx" && return 0
+  fi
+  if pip3 install --user "$pkg" 2>/dev/null; then
+    success "$pkg instalado via pip"
+  elif pip3 install --user --break-system-packages "$pkg" 2>/dev/null; then
+    success "$pkg instalado via pip (break-system-packages)"
+  else
+    warn "No se pudo instalar $pkg. Intenta: pipx install $pkg o sudo pip3 install $pkg"
+  fi
 }
 
 # ---- Config directory ----
@@ -416,8 +433,10 @@ main() {
   echo ""
   info "Próximos pasos:"
   echo "  1. Abre Vim y espera que CoC instale las extensiones"
-  echo "  2. Ejecuta :checkhealth (si usas Neovim) o :CocInfo para verificar"
-  echo "  3. Configura tus conexiones de BD en ~/.vim/plugin-config.vim"
+  echo "  2. Ejecuta :CocInfo dentro de Vim para verificar que todo funciona"
+  echo "  3. (Opcional) Si usas bases de datos, edita ~/.vim/plugin-config.vim"
+  echo "     y descomenta la sección 'g:dbs' con tus datos de conexión."
+  echo "     Ejemplo: 'postgresql://usuario:password@localhost:5432/mi_db'"
   echo ""
   info "Para actualizar la config en el futuro:"
   echo "  cd $CONFIG_DIR && git pull"
