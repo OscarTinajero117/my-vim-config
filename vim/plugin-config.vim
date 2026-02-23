@@ -2,6 +2,11 @@
 " PLUGIN CONFIGURATION
 " ============================================================================
 
+" ---- vim-php-refactoring-toolbox ----
+" Disable default mappings to avoid conflict with <Leader>du (DBUIToggle)
+let g:vim_php_refactoring_use_default_mapping = 0
+let g:vim_php_refactoring_auto_validate_visibility = 1
+
 " ---- vim-closetag ----
 let g:closetag_filenames = '*.html,*.js,*.jsx,*.ts,*.tsx,*.heex,*.leex,*.eex,*.php'
 
@@ -69,7 +74,6 @@ let g:coc_global_extensions = [
       \ 'coc-phpls',
       \ 'coc-clangd',
       \ 'coc-flutter',
-      \ 'coc-dart',
       \ 'coc-snippets',
       \ 'coc-sql',
       \ 'coc-erlang_ls',

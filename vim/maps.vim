@@ -164,6 +164,18 @@ nnoremap <Leader>ms :!mix phx.server<CR>
 nnoremap <Leader>du :DBUIToggle<CR>
 nnoremap <Leader>df :DBUIFindBuffer<CR>
 
+" ---- PHP Refactoring (vim-php-refactoring-toolbox) ----
+autocmd FileType php nnoremap <buffer> <Leader>rlv :call PhpRenameLocalVariable()<CR>
+autocmd FileType php nnoremap <buffer> <Leader>rcv :call PhpRenameClassVariable()<CR>
+autocmd FileType php nnoremap <buffer> <Leader>rm  :call PhpRenameMethod()<CR>
+autocmd FileType php nnoremap <buffer> <Leader>eu  :call PhpExtractUse()<CR>
+autocmd FileType php vnoremap <buffer> <Leader>ec  :call PhpExtractConst()<CR>
+autocmd FileType php nnoremap <buffer> <Leader>ep  :call PhpExtractClassProperty()<CR>
+autocmd FileType php nnoremap <buffer> <Leader>np  :call PhpCreateProperty()<CR>
+autocmd FileType php nnoremap <buffer> <Leader>pdu :call PhpDetectUnusedUseStatements()<CR>
+autocmd FileType php vnoremap <buffer> <Leader>sg  :call PhpCreateSettersAndGetters()<CR>
+autocmd FileType php nnoremap <buffer> <Leader>da  :call PhpDocAll()<CR>
+
 " ---- Docker ----
 nnoremap <Leader>dc :!docker compose up -d<CR>
 nnoremap <Leader>dd :!docker compose down<CR>
