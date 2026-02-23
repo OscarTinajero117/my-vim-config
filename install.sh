@@ -26,6 +26,11 @@ step()    { echo -e "\n${CYAN}==>${NC} ${1}"; }
 
 command_exists() { command -v "$1" &>/dev/null; }
 
+# Read user input from /dev/tty (works even when piped via curl | bash)
+ask() {
+  read -rp "$1" "$2" </dev/tty
+}
+
 # ---- Detect OS ----
 detect_os() {
   case "$(uname -s)" in
@@ -260,8 +265,8 @@ main() {
   # ================================================================
   step "6/8 - Instalando plugins de Vim..."
 
-  vim -es -u "$HOME/.vimrc" +PlugInstall +qall 2>/dev/null || \
-    vim +PlugInstall +qall 2>/dev/null || \
+  vim -es -u "$HOME/.vimrc" +PlugInstall +qall </dev/tty 2>/dev/null || \
+    vim +PlugInstall +qall </dev/tty 2>/dev/null || \
     warn "No se pudieron instalar plugins automáticamente. Abre Vim y ejecuta :PlugInstall"
 
   success "Plugins instalados"
@@ -280,7 +285,7 @@ main() {
   echo "  [3] Seleccionar manualmente"
   echo "  [4] Omitir (instalar después manualmente)"
   echo ""
-  read -rp "Opción [1-4] (default: 1): " TOOLS_CHOICE
+  read -rp "Opción [1-4] (default: 1): " TOOLS_CHOICE </dev/tty
   TOOLS_CHOICE="${TOOLS_CHOICE:-1}"
 
   install_essentials() {
@@ -372,22 +377,22 @@ main() {
     3)
       install_essentials
       echo ""
-      read -rp "¿Instalar herramientas PHP? [y/N]: " yn
+      read -rp "¿Instalar herramientas PHP? [y/N]: " yn </dev/tty
       [[ "$yn" =~ ^[Yy]$ ]] && install_php_tools
 
-      read -rp "¿Instalar herramientas C/C++? [y/N]: " yn
+      read -rp "¿Instalar herramientas C/C++? [y/N]: " yn </dev/tty
       [[ "$yn" =~ ^[Yy]$ ]] && install_c_tools
 
-      read -rp "¿Instalar herramientas SQL? [y/N]: " yn
+      read -rp "¿Instalar herramientas SQL? [y/N]: " yn </dev/tty
       [[ "$yn" =~ ^[Yy]$ ]] && install_sql_tools
 
-      read -rp "¿Instalar herramientas Docker? [y/N]: " yn
+      read -rp "¿Instalar herramientas Docker? [y/N]: " yn </dev/tty
       [[ "$yn" =~ ^[Yy]$ ]] && install_docker_tools
 
-      read -rp "¿Instalar herramientas Node.js? [y/N]: " yn
+      read -rp "¿Instalar herramientas Node.js? [y/N]: " yn </dev/tty
       [[ "$yn" =~ ^[Yy]$ ]] && install_node_tools
 
-      read -rp "¿Instalar herramientas Python (vint, nginx-linter)? [y/N]: " yn
+      read -rp "¿Instalar herramientas Python (vint, nginx-linter)? [y/N]: " yn </dev/tty
       [[ "$yn" =~ ^[Yy]$ ]] && install_python_tools
       ;;
     4)
@@ -428,7 +433,7 @@ uninstall() {
 
   echo ""
   warn "Esto eliminará los symlinks creados por el instalador."
-  read -rp "¿Continuar? [y/N]: " yn
+  read -rp "¿Continuar? [y/N]: " yn </dev/tty
   [[ ! "$yn" =~ ^[Yy]$ ]] && { info "Cancelado."; exit 0; }
 
   # Remove symlinks (only if they point to our config)
@@ -463,7 +468,7 @@ uninstall() {
   LATEST_BACKUP=$(ls -dt "$HOME"/.vim-backup-* 2>/dev/null | head -1)
   if [[ -n "$LATEST_BACKUP" ]]; then
     echo ""
-    read -rp "¿Restaurar backup desde $LATEST_BACKUP? [y/N]: " yn
+    read -rp "¿Restaurar backup desde $LATEST_BACKUP? [y/N]: " yn </dev/tty
     if [[ "$yn" =~ ^[Yy]$ ]]; then
       [[ -f "$LATEST_BACKUP/.vimrc" ]] && mv "$LATEST_BACKUP/.vimrc" "$HOME/.vimrc"
       [[ -f "$LATEST_BACKUP/.vimrc.plug" ]] && mv "$LATEST_BACKUP/.vimrc.plug" "$HOME/.vimrc.plug"
