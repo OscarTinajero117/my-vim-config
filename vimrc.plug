@@ -1,71 +1,128 @@
 call plug#begin('~/.vim/plugged')
-" Flutter plugins
+
+" ============================================================================
+" LANGUAGE SUPPORT
+" ============================================================================
+
+" -- Flutter / Dart --
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'thosakwe/vim-flutter'
-Plug 'natebosch/vim-lsc'
-Plug 'natebosch/vim-lsc-dart'
 
-" tpope plugins
-Plug 'tpope/vim-endwise'
-Plug 'tpope/vim-rails'
-Plug 'tpope/vim-rake'
-Plug 'tpope/vim-bundler'
-Plug 'tpope/vim-rbenv'
-Plug 'tpope/vim-rhubarb'
-Plug 'tpope/vim-ragtag'
+" -- Elixir / Phoenix / Erlang --
+Plug 'elixir-editors/vim-elixir'          " Syntax, indent, ftdetect
+Plug 'mhinz/vim-mix-format'               " Auto-format with mix format
 
-" Elixir plugins
-Plug 'elixir-editors/vim-elixir'
-Plug 'slashmili/alchemist.vim'
+" -- PHP --
+Plug 'StanAngeloff/php.vim'               " Improved PHP syntax
+Plug 'stephpy/vim-php-cs-fixer'           " PHP CS Fixer integration
+Plug 'adoy/vim-php-refactoring-toolbox'   " PHP refactoring tools
+
+" -- C/C++ --
+Plug 'vim-jp/vim-cpp-modern'              " Enhanced C/C++ syntax
+Plug 'rhysd/vim-clang-format'             " Clang-format integration
+
+" -- SQL --
+Plug 'tpope/vim-dadbod'                   " Database interface
+Plug 'kristijanhusak/vim-dadbod-ui'       " UI for vim-dadbod
+Plug 'kristijanhusak/vim-dadbod-completion' " Autocomplete for SQL
+
+" -- Nginx --
+Plug 'chr4/nginx.vim'                      " Nginx syntax, indent & lint
+
+" -- Docker --
+Plug 'ekalinin/Dockerfile.vim'             " Dockerfile syntax & snippets
+
+" -- Markdown --
+Plug 'preservim/vim-markdown'              " Markdown syntax & features
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install' }
+
+" -- Node.js --
+Plug 'moll/vim-node'                       " Node.js tools (gf for require)
+
+" -- Vim script --
+Plug 'junegunn/vader.vim'                  " Vim script testing framework
+
+" -- General syntax --
+Plug 'sheerun/vim-polyglot'               " Language pack collection
+
+" ============================================================================
+" AUTOCOMPLETE & LSP
+" ============================================================================
+
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'sirver/ultisnips'
+Plug 'honza/vim-snippets'                 " Snippet collection
+
+" ============================================================================
+" LINTING
+" ============================================================================
 
 Plug 'dense-analysis/ale'
 
-" Fugitive Vim GitHub Wrapper
+" ============================================================================
+" GIT
+" ============================================================================
+
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb'                  " GitHub integration for fugitive
+Plug 'mhinz/vim-signify'                  " Git diff in sign column
+Plug 'tpope/vim-repeat'                   " Repeat plugin commands with .
 
-" Syntax
-Plug 'sheerun/vim-polyglot'
+" ============================================================================
+" STATUS BAR
+" ============================================================================
 
-" Status bar
 Plug 'maximbaz/lightline-ale'
 Plug 'itchyny/lightline.vim'
 
-" Themes
+" ============================================================================
+" THEMES
+" ============================================================================
+
 Plug 'morhetz/gruvbox'
 Plug 'shinchu/lightline-gruvbox.vim'
 
-" Tree
+" ============================================================================
+" FILE NAVIGATION
+" ============================================================================
+
 Plug 'scrooloose/nerdtree'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 
-" Typing
-Plug 'jiangmiao/auto-pairs'
-Plug 'alvan/vim-closetag'
-Plug 'tpope/vim-surround'
+" ============================================================================
+" EDITING & TYPING
+" ============================================================================
 
-" Tmux
+Plug 'jiangmiao/auto-pairs'               " Auto close brackets/quotes
+Plug 'alvan/vim-closetag'                  " Auto close HTML/XML tags
+Plug 'tpope/vim-surround'                 " Surround text objects
+Plug 'tpope/vim-endwise'                  " Auto-add end/endif/etc
+Plug 'tpope/vim-commentary'               " Better commenting (gc)
+Plug 'mg979/vim-visual-multi'             " Multiple cursors (replaces vim-multiple-cursors)
+Plug 'easymotion/vim-easymotion'
+
+" ============================================================================
+" IDE FEATURES
+" ============================================================================
+
+Plug 'editorconfig/editorconfig-vim'
+Plug 'yggdroot/indentline'
+Plug 'tpope/vim-ragtag'                   " HTML/XML tag helpers
+
+" ============================================================================
+" TMUX
+" ============================================================================
+
 Plug 'benmills/vimux'
 Plug 'christoomey/vim-tmux-navigator'
 
-" Autocomplete
-Plug 'sirver/ultisnips'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" ============================================================================
+" TESTING
+" ============================================================================
 
-" Test
-Plug 'tyewang/vimux-jest-test'
 Plug 'janko-m/vim-test'
-
-" IDE
-Plug 'editorconfig/editorconfig-vim'
-Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
-Plug 'terryma/vim-multiple-cursors'
-Plug 'easymotion/vim-easymotion'
-Plug 'mhinz/vim-signify'
-Plug 'yggdroot/indentline'
-Plug 'scrooloose/nerdcommenter'
-
-" Git
-Plug 'tpope/vim-repeat'
+Plug 'tyewang/vimux-jest-test'
 
 call plug#end()
 
