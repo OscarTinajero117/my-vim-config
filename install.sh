@@ -329,6 +329,36 @@ main() {
   }
 
   install_php_tools() {
+    # Ensure required PHP extensions are installed
+    if command_exists php; then
+      local MISSING_EXTS=()
+      for ext in mbstring xml curl zip tokenizer; do
+        if ! php -m 2>/dev/null | grep -qi "^$ext$"; then
+          MISSING_EXTS+=("$ext")
+        fi
+      done
+      if [[ ${#MISSING_EXTS[@]} -gt 0 ]]; then
+        local PHP_VER
+        PHP_VER="$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;' 2>/dev/null)"
+        info "Instalando extensiones PHP faltantes: ${MISSING_EXTS[*]}..."
+        case "$PKG_MANAGER" in
+          apt)
+            for ext in "${MISSING_EXTS[@]}"; do
+              sudo apt-get install -y "php${PHP_VER}-${ext}" 2>/dev/null || \
+                sudo apt-get install -y "php-${ext}" 2>/dev/null || \
+                warn "No se pudo instalar php-${ext}"
+            done
+            ;;
+          dnf)    for ext in "${MISSING_EXTS[@]}"; do sudo dnf install -y "php-${ext}" 2>/dev/null; done ;;
+          pacman) sudo pacman -S --noconfirm php 2>/dev/null ;;  # php package includes most extensions
+          brew)   ;; # macOS php via brew usually includes everything
+        esac
+      fi
+    else
+      warn "PHP no está instalado. Instálalo para usar herramientas PHP."
+      return 0
+    fi
+
     # Install Composer if not present
     if ! command_exists composer; then
       info "Composer no encontrado, instalando..."
@@ -355,9 +385,9 @@ main() {
       mkdir -p "$COMPOSER_HOME"
       export COMPOSER_HOME
 
-      composer global require squizlabs/php_codesniffer || warn "phpcs no instalado"
-      composer global require phpstan/phpstan || warn "phpstan no instalado"
-      composer global require friendsofphp/php-cs-fixer || warn "php-cs-fixer no instalado"
+      composer global require --no-interaction squizlabs/php_codesniffer 2>&1 || warn "phpcs no instalado"
+      composer global require --no-interaction phpstan/phpstan 2>&1 || warn "phpstan no instalado"
+      composer global require --no-interaction friendsofphp/php-cs-fixer 2>&1 || warn "php-cs-fixer no instalado"
 
       # Add Composer global bin to PATH if not already there
       local COMPOSER_BIN="$COMPOSER_HOME/vendor/bin"
