@@ -329,6 +329,25 @@ main() {
   }
 
   install_php_tools() {
+    # Install Composer if not present
+    if ! command_exists composer; then
+      info "Composer no encontrado, instalando..."
+      if [[ "$OS" == "macos" ]]; then
+        brew install composer 2>/dev/null || warn "No se pudo instalar Composer via brew"
+      else
+        local EXPECTED_CHECKSUM="$(php -r 'copy("https://composer.github.io/installer.sig", "php://stdout");' 2>/dev/null)"
+        php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" 2>/dev/null
+        local ACTUAL_CHECKSUM="$(php -r "echo hash_file('SHA384', 'composer-setup.php');" 2>/dev/null)"
+        if [[ "$EXPECTED_CHECKSUM" == "$ACTUAL_CHECKSUM" ]]; then
+          sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer 2>/dev/null && \
+            success "Composer instalado" || warn "No se pudo instalar Composer"
+        else
+          warn "Checksum de Composer inválido, saltando instalación"
+        fi
+        rm -f composer-setup.php
+      fi
+    fi
+
     if command_exists composer; then
       info "Instalando herramientas PHP..."
       composer global require squizlabs/php_codesniffer 2>/dev/null || warn "phpcs no instalado"
@@ -336,7 +355,7 @@ main() {
       composer global require friendsofphp/php-cs-fixer 2>/dev/null || warn "php-cs-fixer no instalado"
       success "Herramientas PHP instaladas"
     else
-      warn "Composer no encontrado. Instala Composer para herramientas PHP."
+      warn "Composer no disponible. Instálalo manualmente: https://getcomposer.org/download/"
     fi
   }
 
