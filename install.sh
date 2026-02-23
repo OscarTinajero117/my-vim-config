@@ -350,9 +350,22 @@ main() {
 
     if command_exists composer; then
       info "Instalando herramientas PHP..."
-      composer global require squizlabs/php_codesniffer 2>/dev/null || warn "phpcs no instalado"
-      composer global require phpstan/phpstan 2>/dev/null || warn "phpstan no instalado"
-      composer global require friendsofphp/php-cs-fixer 2>/dev/null || warn "php-cs-fixer no instalado"
+      # Ensure Composer global bin dir exists
+      local COMPOSER_HOME="${COMPOSER_HOME:-$HOME/.config/composer}"
+      mkdir -p "$COMPOSER_HOME"
+      export COMPOSER_HOME
+
+      composer global require squizlabs/php_codesniffer || warn "phpcs no instalado"
+      composer global require phpstan/phpstan || warn "phpstan no instalado"
+      composer global require friendsofphp/php-cs-fixer || warn "php-cs-fixer no instalado"
+
+      # Add Composer global bin to PATH if not already there
+      local COMPOSER_BIN="$COMPOSER_HOME/vendor/bin"
+      if [[ ":$PATH:" != *":$COMPOSER_BIN:"* ]]; then
+        export PATH="$PATH:$COMPOSER_BIN"
+        info "Agrega esto a tu ~/.bashrc o ~/.zshrc:"
+        echo "  export PATH=\"\$PATH:$COMPOSER_BIN\""
+      fi
       success "Herramientas PHP instaladas"
     else
       warn "Composer no disponible. Instálalo manualmente: https://getcomposer.org/download/"
