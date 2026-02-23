@@ -102,21 +102,37 @@ npm_install() {
 
 pip_install() {
   local pkg="$1"
-  if pip3 show "$pkg" &>/dev/null 2>&1; then
+  local cmd="${2:-$1}"  # command name (may differ from package name)
+  if command_exists "$cmd" || pip3 show "$pkg" &>/dev/null 2>&1; then
     success "$pkg (pip) ya está instalado"
     return 0
   fi
   info "Instalando $pkg via pip..."
-  # Try pipx first (Python 3.11+ recommended), then pip with fallbacks
-  if command_exists pipx; then
-    pipx install "$pkg" 2>/dev/null && success "$pkg instalado via pipx" && return 0
+
+  # Ensure pipx is available (preferred for Python 3.11+)
+  if ! command_exists pipx; then
+    if [[ "$OS" == "macos" ]]; then
+      brew install pipx 2>/dev/null && pipx ensurepath 2>/dev/null
+    else
+      sudo apt-get install -y pipx 2>/dev/null || \
+        sudo dnf install -y pipx 2>/dev/null || \
+        sudo pacman -S --noconfirm python-pipx 2>/dev/null || \
+        pip3 install --user pipx 2>/dev/null
+      pipx ensurepath 2>/dev/null
+    fi
   fi
-  if pip3 install --user "$pkg" 2>/dev/null; then
+
+  # Try pipx first, then pip with fallbacks
+  if command_exists pipx && pipx install "$pkg" 2>/dev/null; then
+    success "$pkg instalado via pipx"
+  elif pip3 install --user "$pkg" 2>/dev/null; then
     success "$pkg instalado via pip"
   elif pip3 install --user --break-system-packages "$pkg" 2>/dev/null; then
     success "$pkg instalado via pip (break-system-packages)"
+  elif sudo pip3 install "$pkg" 2>/dev/null; then
+    success "$pkg instalado via pip (sudo)"
   else
-    warn "No se pudo instalar $pkg. Intenta: pipx install $pkg o sudo pip3 install $pkg"
+    warn "No se pudo instalar $pkg. Intenta: pipx install $pkg"
   fi
 }
 
@@ -373,8 +389,8 @@ main() {
   }
 
   install_python_tools() {
-    pip_install vim-vint
-    pip_install nginx-linter
+    pip_install vim-vint vint
+    pip_install gixy gixy
     success "Herramientas Python instaladas"
   }
 

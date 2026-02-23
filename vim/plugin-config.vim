@@ -104,7 +104,7 @@ let g:ale_linters = {
       \ 'javascript': ['eslint'],
       \ 'typescript': ['eslint'],
       \ 'vim': ['vint'],
-      \ 'nginx': ['nginx-linter'],
+      \ 'nginx': ['gixy'],
       \ }
 
 let g:ale_fixers = {
