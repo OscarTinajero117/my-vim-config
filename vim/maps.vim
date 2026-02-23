@@ -1,87 +1,188 @@
+" ============================================================================
+" KEY MAPPINGS
+" ============================================================================
+
 let mapleader=" "
 
-" testing
+" ---- File Operations ----
+nnoremap <Leader>w :w<CR>
+nnoremap <Leader>q :q<CR>
+nnoremap <Leader>Q :q!<CR>
+
+" ---- Testing ----
 nnoremap <Leader>t :TestNearest<CR>
 nnoremap <Leader>T :TestFile<CR>
 nnoremap <Leader>TT :TestSuite<CR>
 
-" split resize
+" ---- Split Resize ----
 nnoremap <Leader>> 10<C-w>>
 nnoremap <Leader>< 10<C-w><
 
-" quick semi
+" ---- Quick Semicolon ----
 nnoremap <Leader>; $a;<Esc>
 
-nnoremap <Leader>w :w<CR>
-nnoremap <Leader>q :q<CR>
-nnoremap <Leader>Q :q!<CR>
-" shorter commands
+" ---- Shorter Commands ----
 cnoreabbrev tree NERDTreeToggle
 cnoreabbrev blame Gblame
 cnoreabbrev find NERDTreeFind
 cnoreabbrev diff Gdiff
 
-" plugs
+" ---- Plugin Navigation ----
 map <Leader>nt :NERDTreeFind<CR>
 map <Leader>p :Files<CR>
 map <Leader>ag :Ag<CR>
+map <Leader>rg :Rg<CR>
+map <Leader>gf :GFiles<CR>
 
-" tmux navigator
+" ---- Tmux Navigator ----
 nnoremap <silent> <Leader><C-h> :TmuxNavigateLeft<cr>
 nnoremap <silent> <Leader><C-j> :TmuxNavigateDown<cr>
 nnoremap <silent> <Leader><C-k> :TmuxNavigateUp<cr>
 nnoremap <silent> <Leader><C-l> :TmuxNavigateRight<cr>
 
-" Remap keys for gotos
+" ---- CoC Mappings ----
+" GoTo code navigation
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Remap surround to lowercase s so it does not add an empty space
-xmap s <Plug>VSurround
-" diagnostics
-nnoremap <leader>P :let @*=expand("%")<CR>
+" Use K to show documentation in preview window
+nnoremap <silent> K :call ShowDocumentation()<CR>
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
 
-" tabs navigation
+" Symbol renaming
+nmap <Leader>rn <Plug>(coc-rename)
+
+" Code actions
+nmap <Leader>ca <Plug>(coc-codeaction)
+nmap <Leader>cf <Plug>(coc-fix-current)
+
+" Diagnostics navigation
+nmap <silent> [d <Plug>(coc-diagnostic-prev)
+nmap <silent> ]d <Plug>(coc-diagnostic-next)
+
+" Format selected code
+xmap <Leader>f <Plug>(coc-format-selected)
+nmap <Leader>f <Plug>(coc-format-selected)
+
+" Use <c-space> to trigger completion
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Use <CR> to confirm completion
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" Highlight symbol under cursor on CursorHold
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" ---- ALE Mappings ----
+nmap <Leader>af :ALEFix<CR>
+nmap <Leader>al :ALELint<CR>
+nmap <silent> [a <Plug>(ale_previous_wrap)
+nmap <silent> ]a <Plug>(ale_next_wrap)
+
+" ---- Surround ----
+xmap s <Plug>VSurround
+
+" ---- Copy File Path ----
+nnoremap <leader>P :let @*=expand("%")<CR>
+nnoremap <leader>PP :let @*=expand("%:p")<CR>
+
+" ---- Tab Navigation ----
 map <Leader>h :tabprevious<cr>
 map <Leader>l :tabnext<cr>
+nnoremap <Leader>tn :tabnew<cr>
+nnoremap <Leader>tc :tabclose<cr>
 
-" buffers
+" ---- Buffer Navigation ----
 map <Leader>ob :Buffers<cr>
+nnoremap <Leader>bn :bnext<CR>
+nnoremap <Leader>bp :bprevious<CR>
+nnoremap <Leader>bd :bdelete<CR>
 
-" keeping it centered
+" ---- Keeping It Centered ----
 nnoremap n nzzzv
 nnoremap N Nzzzv
 nnoremap J mzJ`z
 
-" Moving text
+" ---- Moving Text ----
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
 nnoremap <Leader>k :m .-2<CR>==
 nnoremap <Leader>j :m .+1<CR>==
 
-" faster scrolling
+" ---- Faster Scrolling ----
 nnoremap <C-j> 10<C-e>
 nnoremap <C-k> 10<C-y>
+
+" ---- EasyMotion ----
 nmap <Leader>s <Plug>(easymotion-s2)
 
-" git
+" ---- Git ----
 nnoremap <Leader>G :G<cr>
 nnoremap <Leader>gp :Gpush<cr>
 nnoremap <Leader>gl :Gpull<cr>
+nnoremap <Leader>gb :Git blame<cr>
+nnoremap <Leader>gd :Gdiffsplit<cr>
+nnoremap <Leader>gs :Git log --oneline -20<cr>
 
-" run current file
+" ---- Run Current File ----
 nnoremap <Leader>x :!node %<cr>
 
-" Use <c-space> to trigger completion.
-"if &filetype == "javascript" || &filetype == "python"
-  "inoremap <c-space> <C-x><C-u>
-"else
-  inoremap <silent><expr> <c-space> coc#refresh()
-"endif
+" ---- Language-Specific Runners ----
+augroup RunCommands
+  autocmd!
+  autocmd FileType elixir nnoremap <buffer> <Leader>x :!elixir %<CR>
+  autocmd FileType php nnoremap <buffer> <Leader>x :!php %<CR>
+  autocmd FileType c nnoremap <buffer> <Leader>x :!gcc % -o %:r && ./%:r<CR>
+  autocmd FileType cpp nnoremap <buffer> <Leader>x :!g++ % -o %:r && ./%:r<CR>
+  autocmd FileType dart nnoremap <buffer> <Leader>x :!dart run %<CR>
+  autocmd FileType erlang nnoremap <buffer> <Leader>x :!erl -noshell -s %:r start -s init stop<CR>
+augroup END
 
+" ---- Flutter Shortcuts ----
+nnoremap <Leader>fr :FlutterRun<CR>
+nnoremap <Leader>fq :FlutterQuit<CR>
+nnoremap <Leader>fh :FlutterHotReload<CR>
+nnoremap <Leader>fR :FlutterHotRestart<CR>
+nnoremap <Leader>fD :FlutterVisualDebug<CR>
 
+" ---- Elixir / Phoenix Shortcuts ----
+nnoremap <Leader>mf :!mix format %<CR>
+nnoremap <Leader>mt :!mix test %<CR>
+nnoremap <Leader>mc :!mix compile<CR>
+nnoremap <Leader>ms :!mix phx.server<CR>
+
+" ---- Database (vim-dadbod-ui) ----
+nnoremap <Leader>du :DBUIToggle<CR>
+nnoremap <Leader>df :DBUIFindBuffer<CR>
+
+" ---- Docker ----
+nnoremap <Leader>dc :!docker compose up -d<CR>
+nnoremap <Leader>dd :!docker compose down<CR>
+nnoremap <Leader>dl :!docker compose logs -f --tail=50<CR>
+nnoremap <Leader>dp :!docker ps<CR>
+nnoremap <Leader>db :!docker compose build<CR>
+
+" ---- Markdown ----
+nnoremap <Leader>mp :MarkdownPreview<CR>
+nnoremap <Leader>mP :MarkdownPreviewStop<CR>
+
+" ---- Node.js ----
+augroup NodeRunCommands
+  autocmd!
+  autocmd FileType javascript nnoremap <buffer> <Leader>x :!node %<CR>
+  autocmd FileType typescript nnoremap <buffer> <Leader>x :!npx ts-node %<CR>
+augroup END
+
+" ---- Terminal ----
 set splitright
 function! OpenTerminal()
   " move to right most buffer
@@ -118,126 +219,9 @@ function! OpenTerminal()
 endfunction
 nnoremap <C-t> :call OpenTerminal()<CR>
 
-inoremap <expr> <CR> ParensIndent()
+" ---- Clear Search Highlight ----
+nnoremap <Leader><space> :nohlsearch<CR>
 
-function! ParensIndent()
-  let prev = col('.') - 1
-  let after = col('.')
-  let prevChar = matchstr(getline('.'), '\%' . prev . 'c.')
-  let afterChar = matchstr(getline('.'), '\%' . after . 'c.')
-  if (prevChar == '"' && afterChar == '"') ||
-\    (prevChar == "'" && afterChar == "'") ||
-\    (prevChar == "(" && afterChar == ")") ||
-\    (prevChar == "{" && afterChar == "}") ||
-\    (prevChar == "[" && afterChar == "]")
-    return "\<CR>\<ESC>O"
-  endif
-  
-  return "\<CR>"
-endfunction
-
-inoremap <expr> <space> ParensSpacing()
-
-function! ParensSpacing()
-  let prev = col('.') - 1
-  let after = col('.')
-  let prevChar = matchstr(getline('.'), '\%' . prev . 'c.')
-  let afterChar = matchstr(getline('.'), '\%' . after . 'c.')
-  if (prevChar == '"' && afterChar == '"') ||
-\    (prevChar == "'" && afterChar == "'") ||
-\    (prevChar == "(" && afterChar == ")") ||
-\    (prevChar == "{" && afterChar == "}") ||
-\    (prevChar == "[" && afterChar == "]")
-    return "\<space>\<space>\<left>"
-  endif
-  
-  return "\<space>"
-endfunction
-
-inoremap <expr> <BS> ParensRemoveSpacing()
-
-function! ParensRemoveSpacing()
-  let prev = col('.') - 1
-  let after = col('.')
-  let prevChar = matchstr(getline('.'), '\%' . prev . 'c.')
-  let afterChar = matchstr(getline('.'), '\%' . after . 'c.')
-
-  if (prevChar == '"' && afterChar == '"') ||
-\    (prevChar == "'" && afterChar == "'") ||
-\    (prevChar == "(" && afterChar == ")") ||
-\    (prevChar == "{" && afterChar == "}") ||
-\    (prevChar == "[" && afterChar == "]")
-    return "\<bs>\<right>\<bs>"
-  endif
-  
-  if (prevChar == ' ' && afterChar == ' ')
-    let prev = col('.') - 2
-    let after = col('.') + 1
-    let prevChar = matchstr(getline('.'), '\%' . prev . 'c.')
-    let afterChar = matchstr(getline('.'), '\%' . after . 'c.')
-    if (prevChar == '"' && afterChar == '"') ||
-  \    (prevChar == "'" && afterChar == "'") ||
-  \    (prevChar == "(" && afterChar == ")") ||
-  \    (prevChar == "{" && afterChar == "}") ||
-  \    (prevChar == "[" && afterChar == "]")
-      return "\<bs>\<right>\<bs>"
-    endif
-  endif
-  
-  return "\<bs>"
-endfunction
-
-inoremap { {}<left>
-inoremap ( ()<left>
-inoremap [ []<left>
-inoremap ' ''<left>
-inoremap " ""<left>
-
-let curly = "}"
-inoremap <expr> } CheckNextParens(curly)
-
-let bracket = "]"
-inoremap <expr> ] CheckNextParens(bracket)
-
-let parens = ")"
-inoremap <expr> ) CheckNextParens(parens)
-
-let quote = "'"
-inoremap <expr> ' CheckNextQuote(quote)
-
-let dquote = '"'
-inoremap <expr> " CheckNextQuote(dquote)
-
-let bticks = '`'
-inoremap <expr> ` CheckNextQuote(bticks)
-
-function CheckNextQuote(c)
-  let after = col('.')
-  let afterChar = matchstr(getline('.'), '\%' . after . 'c.')
-  
-  if (afterChar == a:c)
-    return "\<right>"
-  endif
-  if (afterChar == ' ' || afterChar == '' || afterChar == ')' || afterChar== '}' || afterChar == ']')
-    return a:c . a:c . "\<left>"
-  endif
-  if (afterChar != a:c)
-    let bticks = '`'
-    let dquote = '"'
-    let quote = "'"
-    if(afterChar == dquote || afterChar == quote || afterChar == bticks)
-      return a:c . a:c . "\<left>"
-    endif
-  endif
-  return a:c
-endfunction
-
-function CheckNextParens(c)
-  let after = col('.')
-  let afterChar = matchstr(getline('.'), '\%' . after . 'c.')
-  if (afterChar == a:c)
-
-    return "\<right>"
-  endif
-  return a:c
-endfunction
+" ---- Quick Escape ----
+inoremap jk <Esc>
+inoremap kj <Esc>
